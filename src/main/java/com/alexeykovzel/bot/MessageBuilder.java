@@ -1,6 +1,6 @@
 package com.alexeykovzel.bot;
 
-import com.alexeykovzel.db.entity.term.TermDto;
+import com.alexeykovzel.db.model.term.TermDto;
 import com.alexeykovzel.util.Pair;
 
 import java.util.List;

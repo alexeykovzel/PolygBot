@@ -1,6 +1,7 @@
-package com.alexeykovzel.db.entity;
+package com.alexeykovzel.db.model.casestudy;
 
-import com.alexeykovzel.db.entity.term.Term;
+import com.alexeykovzel.db.model.Chat;
+import com.alexeykovzel.db.model.term.Term;
 import lombok.*;
 
 import javax.persistence.*;

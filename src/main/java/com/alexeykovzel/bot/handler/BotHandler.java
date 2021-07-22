@@ -7,21 +7,20 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public interface BotHandler {
-
-    String escapeMarkdown(String text);
-
+interface BotHandler {
     void handleUpdate(Update update) throws TelegramApiException;
 
-    void processInvalidCommandUpdate(Update update);
+    void handleInvalidCommandUpdate(Update update);
 
-    void processTextMessage(Message message);
+    void handleTextMessage(Message message);
 
-    void processNonTextMessage(Message message);
+    void handleNonTextMessage(Message message);
 
-    void handleCallBackQuery(Update update) throws TelegramApiException;
+    void handleNonCommandUpdate(Update update);
 
-    void processNonCommandUpdate(Update update);
+    void handleCallbackQuery(Update update) throws TelegramApiException;
+
+    String getBotUsername();
 
     void sendMsg(String chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup);
 
@@ -29,9 +28,11 @@ public interface BotHandler {
 
     void deleteMsg(String chatId, Integer messageId);
 
-    void sendAnswerCallbackQuery(String text, boolean alert, CallbackQuery callbackquery);
+    void sendAnswerCallbackQuery(String text, boolean alert, String callbackQueryId);
+
+    void sendAnswerCallbackQuery(String callbackQueryId);
 
     InlineKeyboardButton createInlineKeyboardButton(String text, String callbackData);
 
-    String getBotUsername();
+    String escapeMarkdown(String text);
 }

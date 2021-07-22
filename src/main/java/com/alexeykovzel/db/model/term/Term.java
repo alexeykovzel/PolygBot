@@ -1,6 +1,6 @@
-package com.alexeykovzel.db.entity.term;
+package com.alexeykovzel.db.model.term;
 
-import com.alexeykovzel.db.entity.CaseStudy;
+import com.alexeykovzel.db.model.casestudy.CaseStudy;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 

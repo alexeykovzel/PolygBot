@@ -1,6 +1,6 @@
 package com.alexeykovzel.service;
 
-import com.alexeykovzel.db.entity.term.TermDto;
+import com.alexeykovzel.db.model.term.TermDto;
 
 import java.io.IOException;
 

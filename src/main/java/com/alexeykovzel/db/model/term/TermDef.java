@@ -1,4 +1,4 @@
-package com.alexeykovzel.db.entity.term;
+package com.alexeykovzel.db.model.term;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

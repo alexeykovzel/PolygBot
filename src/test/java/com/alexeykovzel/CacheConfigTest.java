@@ -8,23 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.TestPropertySource;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ComponentScan
 @TestPropertySource(
         locations = "classpath:application.properties")
-class CaseStudyRepositoryTest {
-    private static final Logger logger = LoggerFactory.getLogger(CaseStudyRepositoryTest.class);
+public class CacheConfigTest {
+    private static final Logger logger = LoggerFactory.getLogger(CacheConfigTest.class);
 
     @Autowired
-    private CaseStudyRepository caseStudyRepository;
+    private CaseStudyDataServiceTest caseStudyDataService;
 
     @Autowired
     private CacheManager cacheManager;
@@ -33,10 +29,12 @@ class CaseStudyRepositoryTest {
     void checkCashing() {
         String chatId = "597554184";
 
-        Optional<List<String>> termValues = findAllTermValuesByChatId(chatId);
-    }
-
-    Optional<List<String>> findAllTermValuesByChatId(String chatId) {
-        return caseStudyRepository.findAllTermValuesByChatId(chatId);
+        for (int i = 0; i < 5; i++) {
+            caseStudyDataService.findTermValuesByChatId(chatId).ifPresent(termValues -> {
+                for (String value : termValues) {
+                    System.out.println("value: " + value);
+                }
+            });
+        }
     }
 }

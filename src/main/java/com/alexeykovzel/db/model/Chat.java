@@ -1,5 +1,6 @@
-package com.alexeykovzel.db.entity;
+package com.alexeykovzel.db.model;
 
+import com.alexeykovzel.db.model.casestudy.CaseStudy;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

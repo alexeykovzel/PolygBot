@@ -1,14 +1,12 @@
-package com.alexeykovzel.bot.command;
+package com.alexeykovzel.bot.cmd;
 
-import com.alexeykovzel.db.entity.Chat;
-import com.alexeykovzel.db.entity.User;
+import com.alexeykovzel.db.model.Chat;
+import com.alexeykovzel.db.model.User;
 import com.alexeykovzel.db.repository.ChatRepository;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +16,16 @@ import java.util.List;
  *
  * @author alexeykovzel
  */
-public class StartCommand extends BotCommand {
+public class StartCmd extends BotCommand {
     private static final String COMMAND_IDENTIFIER = "start";
     private static final String COMMAND_DESCRIPTION = "this command starts the bot";
     private final ChatRepository chatRepository;
-    private final HelpCommand helpCommand;
+    private final HelpCmd helpCmd;
 
 
-    public StartCommand(HelpCommand helpCommand, ChatRepository chatRepository) {
+    public StartCmd(HelpCmd helpCmd, ChatRepository chatRepository) {
         super(COMMAND_IDENTIFIER, COMMAND_DESCRIPTION);
-        this.helpCommand = helpCommand;
+        this.helpCmd = helpCmd;
         this.chatRepository = chatRepository;
     }
 
@@ -43,7 +41,7 @@ public class StartCommand extends BotCommand {
                     new User(user.getFirstName(), user.getLastName(), user.getUserName(), null)));
         }
 
-        helpCommand.execute(absSender, user, chat, new String[]{});
+        helpCmd.execute(absSender, user, chat, new String[]{});
     }
 
     private InlineKeyboardMarkup getInlineKeyboardMarkup() { // is not used

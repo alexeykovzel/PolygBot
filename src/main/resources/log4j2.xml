@@ -1,4 +1,4 @@
-<Configuration status="WARN">
+<Configuration vocabStatus="WARN">
     <Appenders>
         <Lambda name="Lambda">
             <PatternLayout>

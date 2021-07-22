@@ -10,23 +10,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(
         locations = "classpath:application.properties")
-public class VocabCommandTest extends DefaultAbsSender {
+public class VocabCmdTest extends DefaultAbsSender {
 
     @Autowired
     private ChatRepository chatRepository;
@@ -34,7 +30,7 @@ public class VocabCommandTest extends DefaultAbsSender {
     @Autowired
     private CaseStudyRepository caseStudyRepository;
 
-    public VocabCommandTest() {
+    public VocabCmdTest() {
         super(new DefaultBotOptions());
     }
 

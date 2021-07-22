@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.command;
+package com.alexeykovzel.bot.cmd;
 
 import com.alexeykovzel.bot.MessageBuilder;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
@@ -14,11 +14,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
  *
  * @author Timo Schulz (Mit0x2)
  */
-public class HelpCommand extends BotCommand {
+public class HelpCmd extends BotCommand {
     private static final String COMMAND_IDENTIFIER = "help";
     private static final String COMMAND_DESCRIPTION = "shows all commands. Use /help [command] for more info";
 
-    public HelpCommand() {
+    public HelpCmd() {
         super(COMMAND_IDENTIFIER, COMMAND_DESCRIPTION);
     }
 

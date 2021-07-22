@@ -36,14 +36,14 @@ abstract class LongPollingBotHandler extends TelegramLongPollingBot implements B
             Message message = update.getMessage();
             if (message.isCommand() && !filter(message)) {
                 if (!commandRegistry.executeCommand(this, message)) {
-                    processInvalidCommandUpdate(update);
+                    handleInvalidCommandUpdate(update);
                 }
             } else {
-                processNonCommandUpdate(update);
+                handleNonCommandUpdate(update);
             }
         } else {
             if (update.hasCallbackQuery()) {
-                handleCallBackQuery(update);
+                handleCallbackQuery(update);
             }
         }
     }
@@ -94,11 +94,22 @@ abstract class LongPollingBotHandler extends TelegramLongPollingBot implements B
     }
 
     @Override
-    public synchronized void sendAnswerCallbackQuery(String text, boolean alert, CallbackQuery callbackquery) {
+    public synchronized void sendAnswerCallbackQuery(String text, boolean alert, String callbackQueryId) {
         AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackquery.getId())
+                .callbackQueryId(callbackQueryId)
                 .showAlert(alert)
                 .text(text).build();
+        try {
+            execute(answerCallbackQuery);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+
+    @Override
+    public synchronized void sendAnswerCallbackQuery(String callbackQueryId) {
+        AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQueryId).build();
         try {
             execute(answerCallbackQuery);
         } catch (TelegramApiException e) {

@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.command;
+package com.alexeykovzel.bot.cmd;
 
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -7,9 +7,9 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class HelloCommand extends BotCommand {
+public class HelloCmd extends BotCommand {
 
-    public HelloCommand() {
+    public HelloCmd() {
         super("hello", "Experimental command");
     }
 

@@ -1,6 +1,6 @@
 package com.alexeykovzel.bot.handler;
 
-import com.alexeykovzel.bot.command.HelpCommand;
+import com.alexeykovzel.bot.cmd.HelpCmd;
 import com.alexeykovzel.bot.Emoji;
 import lombok.Getter;
 import org.jsoup.Jsoup;
@@ -26,6 +26,7 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
     private static final Properties properties = new Properties();
     private static AWSPolygBotHandler polygBotController;
     private final String botToken;
+
     @Getter
     private final String botUsername;
 
@@ -46,7 +47,7 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
         this.botUsername = botUsername;
 
         commandRegistry = new CommandRegistry(true, () -> botUsername);
-        HelpCommand helpCommand = new HelpCommand();
+        HelpCmd helpCmd = new HelpCmd();
 //        commandRegistry.registerAll(helpCommand, new StartCommand(helpCommand), new HelloCommand());
 
         commandRegistry.registerDefaultAction((absSender, message) -> {
@@ -58,18 +59,18 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
-            helpCommand.execute(absSender, message.getFrom(), message.getChat(), new String[]{});
+            helpCmd.execute(absSender, message.getFrom(), message.getChat(), new String[]{});
         });
     }
 
     @Override
-    public void processInvalidCommandUpdate(Update update) {
+    public void handleInvalidCommandUpdate(Update update) {
         String chatId = String.valueOf(update.getMessage().getChatId());
         sendMsg(chatId, "I don't know such command");
     }
 
     @Override
-    public void handleCallBackQuery(Update update) {
+    public void handleCallbackQuery(Update update) {
         CallbackQuery callbackquery = update.getCallbackQuery();
         Message message = callbackquery.getMessage();
         Integer messageId = message.getMessageId();
@@ -97,23 +98,23 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
     }
 
     @Override
-    public void processNonCommandUpdate(Update update) {
+    public void handleNonCommandUpdate(Update update) {
         Message message = update.getMessage();
         if (!message.hasText()) {
-            processNonTextMessage(message);
+            handleNonTextMessage(message);
         } else {
-            processTextMessage(message);
+            handleTextMessage(message);
         }
     }
 
     @Override
-    public void processNonTextMessage(Message message) {
+    public void handleNonTextMessage(Message message) {
         String chatId = message.getChatId().toString();
         sendMsg(chatId, "Send pls text");
     }
 
     @Override
-    public void processTextMessage(Message message) {
+    public void handleTextMessage(Message message) {
         String chatId = message.getChatId().toString();
         String messageText = message.getText();
         Document doc;

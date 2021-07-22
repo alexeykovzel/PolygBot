@@ -1,6 +1,6 @@
 package com.alexeykovzel.service;
 
-import com.alexeykovzel.db.entity.term.TermDto;
+import com.alexeykovzel.db.model.term.TermDto;
 import com.alexeykovzel.util.Pair;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
