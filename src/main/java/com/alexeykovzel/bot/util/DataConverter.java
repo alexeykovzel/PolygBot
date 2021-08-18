@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.query.converter;
+package com.alexeykovzel.bot.util;
 
 import org.telegram.telegrambots.meta.bots.AbsSender;
 

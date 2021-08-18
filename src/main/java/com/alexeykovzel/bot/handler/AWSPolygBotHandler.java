@@ -1,7 +1,7 @@
 package com.alexeykovzel.bot.handler;
 
-import com.alexeykovzel.bot.cmd.HelpCmd;
-import com.alexeykovzel.bot.Emoji;
+import com.alexeykovzel.bot.command.HelpCmd;
+import com.alexeykovzel.bot.config.EmojiConfig;
 import lombok.Getter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -53,7 +53,7 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
         commandRegistry.registerDefaultAction((absSender, message) -> {
             SendMessage commandUnknownMessage = new SendMessage();
             commandUnknownMessage.setChatId(String.valueOf(message.getChatId()));
-            commandUnknownMessage.setText("The command '" + message.getText() + "' is not known by this bot. Here comes some help " + Emoji.AMBULANCE);
+            commandUnknownMessage.setText("The command '" + message.getText() + "' is not known by this bot. Here comes some help " + EmojiConfig.AMBULANCE);
             try {
                 absSender.execute(commandUnknownMessage);
             } catch (TelegramApiException e) {
@@ -84,7 +84,7 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
         }
         switch (command) {
             case "saveWord":
-                sendMsg(chatId, "I will do my best!" + Emoji.SMILING_FACE_WITH_OPEN_MOUTH_AND_SMILING_EYES);
+                sendMsg(chatId, "I will do my best!" + EmojiConfig.SMILING_FACE_WITH_OPEN_MOUTH_AND_SMILING_EYES);
                     /*if (!WordHome.isDublicate(chatId, commandQuery)) {
                         assert commandQuery != null;
                         WordHome.saveWord(chatId, commandQuery, 0.7);
@@ -133,7 +133,7 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
                 sendMsg(chatId, "Would you like to add '*" + origTerm + "*' to your local vocabulary?", buildWordAddReplyMarkup(origTerm));
 //                    }
             } catch (NullPointerException e) {
-                sendMsg(chatId, "Ahh, I don't know what is '*" + messageText + "*' " + Emoji.DISAPPOINTED_BUT_RELIEVED_FACE);
+                sendMsg(chatId, "Ahh, I don't know what is '*" + messageText + "*' " + EmojiConfig.DISAPPOINTED_BUT_RELIEVED_FACE);
             }
         } catch (IOException e) {
             e.printStackTrace();

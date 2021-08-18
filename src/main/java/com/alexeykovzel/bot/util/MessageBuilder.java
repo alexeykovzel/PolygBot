@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot;
+package com.alexeykovzel.bot.util;
 
 import com.alexeykovzel.db.model.term.TermDto;
 import com.alexeykovzel.util.Pair;
@@ -58,20 +58,16 @@ public class MessageBuilder {
         return examplesSection;
     }
 
-    public static String buildHelpMessage() {
-        return "I am good at teaching new words and new meanings. You can start by writing /tutorial in the chat.\n" +
-                "\n" +
-                "Also, you can control me by using these commands:\n" +
-                "\n" +
+    public static String buildHelpMsg() {
+        return "I am good at teaching new words and new meanings. You can start by writing /tutorial in the chat.\n\n" +
+                "Also, you can control me by using these commands:\n\n" +
                 "/help - shows all commands\n" +
-                "/tutorial - learn to use this bot\n" +
-                "\n" +
+                "/tutorial - learn to use this bot\n\n" +
                 "*Bot Usage*\n" +
                 "/status - view user status\n" +
                 "/vocab - open your vocabulary\n" +
                 "/newquiz - take quick quiz\n" +
-                "/newterm - suggest new term\n" +
-                "\n" +
+                "/newterm - suggest new term\n\n" +
                 "*Bot Settings*\n" +
                 "/settings - change bot settings\n" +
                 "/language - change bot language\n" +

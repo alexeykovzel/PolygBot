@@ -1,5 +1,6 @@
-package com.alexeykovzel.bot.handler;
+package com.alexeykovzel.bot.handler.localhost;
 
+import com.alexeykovzel.bot.handler.BotHandler;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.CommandRegistry;
@@ -7,6 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -112,6 +114,19 @@ abstract class LongPollingBotHandler extends TelegramLongPollingBot implements B
                 .callbackQueryId(callbackQueryId).build();
         try {
             execute(answerCallbackQuery);
+        } catch (TelegramApiException e) {
+            e.getStackTrace();
+        }
+    }
+
+    @Override
+    public void editMessageReplyMarkup(String chatId, Integer messageId, InlineKeyboardMarkup markup) {
+        EditMessageReplyMarkup replyMarkup = EditMessageReplyMarkup.builder()
+                .chatId(chatId)
+                .messageId(messageId)
+                .replyMarkup(markup).build();
+        try {
+            execute(replyMarkup);
         } catch (TelegramApiException e) {
             e.getStackTrace();
         }

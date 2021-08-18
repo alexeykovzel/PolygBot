@@ -1,5 +1,6 @@
-package com.alexeykovzel.bot.cmd;
+package com.alexeykovzel.bot.command;
 
+import com.alexeykovzel.bot.command.HelpCmd;
 import com.alexeykovzel.db.model.Chat;
 import com.alexeykovzel.db.model.User;
 import com.alexeykovzel.db.repository.ChatRepository;

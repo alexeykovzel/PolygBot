@@ -1,6 +1,6 @@
-package com.alexeykovzel.bot;
+package com.alexeykovzel.bot.config;
 
-public enum Emoji {
+public enum EmojiConfig {
     GRINNING_FACE_WITH_SMILING_EYES('\uD83D', '\uDE01'),
     FACE_WITH_TEARS_OF_JOY('\uD83D', '\uDE02'),
     SMILING_FACE_WITH_OPEN_MOUTH('\uD83D', '\uDE03'),
@@ -161,7 +161,7 @@ public enum Emoji {
     Character firstChar;
     Character secondChar;
 
-    Emoji(Character firstChar, Character secondChar) {
+    EmojiConfig(Character firstChar, Character secondChar) {
         this.firstChar = firstChar;
         this.secondChar = secondChar;
     }

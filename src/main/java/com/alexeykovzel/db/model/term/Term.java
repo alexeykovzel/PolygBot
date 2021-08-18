@@ -33,6 +33,7 @@ public class Term {
             name = "term_def",
             joinColumns = @JoinColumn(name = "term_id")
     )
+    @Builder.Default
     private Set<TermDef> defs = new HashSet<>();
 
     @ElementCollection
@@ -41,9 +42,11 @@ public class Term {
             joinColumns = @JoinColumn(name = "term_id")
     )
     @Column(name = "value")
+    @Builder.Default
     private Set<String> examples = new HashSet<>();
 
     @OneToMany(mappedBy = "term", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<CaseStudy> caseStudies = new HashSet<>();
 
     public Term(String value, Set<TermDef> defs, Set<String> examples) {

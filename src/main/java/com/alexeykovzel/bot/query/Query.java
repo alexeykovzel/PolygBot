@@ -1,6 +1,6 @@
 package com.alexeykovzel.bot.query;
 
-public interface QueryExecutor {
+public interface Query {
     void execute();
 
     void setStatusByKey(String statusId);

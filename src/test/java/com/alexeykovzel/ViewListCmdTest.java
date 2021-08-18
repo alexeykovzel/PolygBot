@@ -22,7 +22,7 @@ import java.util.List;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(
         locations = "classpath:application.properties")
-public class VocabCmdTest extends DefaultAbsSender {
+public class ViewListCmdTest extends DefaultAbsSender {
 
     @Autowired
     private ChatRepository chatRepository;
@@ -30,7 +30,7 @@ public class VocabCmdTest extends DefaultAbsSender {
     @Autowired
     private CaseStudyRepository caseStudyRepository;
 
-    public VocabCmdTest() {
+    public ViewListCmdTest() {
         super(new DefaultBotOptions());
     }
 

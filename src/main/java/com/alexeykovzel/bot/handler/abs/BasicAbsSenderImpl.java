@@ -1,57 +1,18 @@
-package com.alexeykovzel.bot.handler;
+package com.alexeykovzel.bot.handler.abs;
 
-import org.telegram.telegrambots.bots.DefaultAbsSender;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.CommandRegistry;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public abstract class TelegramBotHandler extends DefaultAbsSender implements BotHandler {
-    protected static CommandRegistry commandRegistry;
+public abstract class BasicAbsSenderImpl implements BasicAbsSender {
+    protected AbsSender absSender;
 
-    protected TelegramBotHandler() {
-        this(new DefaultBotOptions());
-    }
-
-    protected TelegramBotHandler(DefaultBotOptions options) {
-        this(options, true);
-    }
-
-    protected TelegramBotHandler(DefaultBotOptions options, boolean allowCommandsWithUsername) {
-        super(options);
-        commandRegistry = new CommandRegistry(allowCommandsWithUsername, this::getBotUsername);
-    }
-
-    @Override
-    public void handleUpdate(Update update) throws TelegramApiException {
-        if (update.hasMessage()) {
-            Message message = update.getMessage();
-            if (message.isCommand() && !filter(message)) {
-                if (!commandRegistry.executeCommand(this, message)) {
-                    handleInvalidCommandUpdate(update);
-                }
-            } else {
-                handleNonCommandUpdate(update);
-            }
-        } else {
-            if (update.hasCallbackQuery()) {
-                handleCallbackQuery(update);
-            }
-        }
-    }
-    protected boolean filter(Message message) {
-        return false;
-    }
-
-    @Override
     public synchronized void sendMsg(String chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
@@ -60,7 +21,7 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
                 .disableWebPagePreview(true)
                 .replyMarkup(inlineKeyboardMarkup).build();
         try {
-            execute(sendMessage);
+            absSender.execute(sendMessage);
         } catch (TelegramApiException e) {
             e.getStackTrace();
         }
@@ -74,7 +35,7 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
                 .parseMode(ParseMode.MARKDOWN)
                 .disableWebPagePreview(true).build();
         try {
-            execute(sendMessage);
+            absSender.execute(sendMessage);
         } catch (TelegramApiException e) {
             e.getStackTrace();
         }
@@ -86,7 +47,7 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
                 .chatId(chatId)
                 .messageId(messageId).build();
         try {
-            execute(deleteMessage);
+            absSender.execute(deleteMessage);
         } catch (TelegramApiException e) {
             e.getStackTrace();
         }
@@ -99,7 +60,7 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
                 .showAlert(alert)
                 .text(text).build();
         try {
-            execute(answerCallbackQuery);
+            absSender.execute(answerCallbackQuery);
         } catch (TelegramApiException e) {
             e.getStackTrace();
         }
@@ -110,7 +71,7 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
         AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQueryId).build();
         try {
-            execute(answerCallbackQuery);
+            absSender.execute(answerCallbackQuery);
         } catch (TelegramApiException e) {
             e.getStackTrace();
         }
@@ -126,13 +87,21 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
     }
 
     @Override
+    public InlineKeyboardButton createInlineKeyboardButton(String text, String callbackData) {
+        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+        inlineKeyboardButton.setText(text);
+        inlineKeyboardButton.setCallbackData(callbackData);
+        return inlineKeyboardButton;
+    }
+
+    @Override
     public void editMessageReplyMarkup(String chatId, Integer messageId, InlineKeyboardMarkup markup) {
         EditMessageReplyMarkup replyMarkup = EditMessageReplyMarkup.builder()
                 .chatId(chatId)
                 .messageId(messageId)
                 .replyMarkup(markup).build();
         try {
-            execute(replyMarkup);
+            absSender.execute(replyMarkup);
         } catch (TelegramApiException e) {
             e.getStackTrace();
         }

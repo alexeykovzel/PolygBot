@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QueryDto {
+public class CallbackQueryDto {
     private String typeKey;
     private String statusKey;
     private String[] args;
