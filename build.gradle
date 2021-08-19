@@ -2,8 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.5.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "io.freefair.lombok" version "6.0.0-m2"
-    id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.5.21'
+    id 'java'
 }
 
 group 'com.alexeykovzel'
@@ -20,31 +20,31 @@ repositories {
 
 dependencies {
     // AWS
-    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.946')
+    implementation platform('com.amazonaws:aws-java-sdk-bom:1.12.48')
     implementation 'com.amazonaws:aws-java-sdk-s3'
     implementation 'com.amazonaws:aws-java-sdk-rdsdata'
 
-    implementation 'software.amazon.awssdk:lambda:2.10.73'
+    implementation 'software.amazon.awssdk:lambda:2.17.19'
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
 
-    implementation platform('com.amazonaws:aws-xray-recorder-sdk-bom:2.4.0')
+    implementation platform('com.amazonaws:aws-xray-recorder-sdk-bom:2.9.1')
     implementation 'com.amazonaws:aws-xray-recorder-sdk-core'
     implementation 'com.amazonaws:aws-xray-recorder-sdk-aws-sdk-core'
     implementation 'com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2'
     implementation 'com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2-instrumentor'
 
     // Persistence
-//    implementation 'software.amazon.rdsdata:rds-data-api-client-library-java:1.0.5'
 //    implementation 'org.hibernate:hibernate-core:5.4.0.Final'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.3'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-cache:2.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
     runtimeOnly 'com.h2database:h2'
 
     // Logging
-    implementation 'org.apache.logging.log4j:log4j-api:2.13.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.13.0'
-    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j18-impl:2.13.0'
+    implementation platform('org.apache.logging.log4j:log4j-bom:2.14.1')
+    implementation 'org.apache.logging.log4j:log4j-api'
+    implementation 'org.apache.logging.log4j:log4j-core'
+    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j18-impl'
     runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.2.0'
 
     // Telegram
@@ -53,14 +53,14 @@ dependencies {
     implementation 'org.telegram:telegrambots:5.3.0'
 
     // Other
-    implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
+//    implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
-    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'org.jsoup:jsoup:1.14.2'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 

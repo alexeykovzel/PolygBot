@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.command;
+package com.alexeykovzel.bot.feature.command;
 
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

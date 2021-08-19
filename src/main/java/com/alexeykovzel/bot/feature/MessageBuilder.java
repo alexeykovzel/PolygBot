@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.util;
+package com.alexeykovzel.bot.feature;
 
 import com.alexeykovzel.db.model.term.TermDto;
 import com.alexeykovzel.util.Pair;

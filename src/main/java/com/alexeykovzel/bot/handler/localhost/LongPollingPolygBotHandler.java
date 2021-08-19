@@ -3,16 +3,16 @@ package com.alexeykovzel.bot.handler.localhost;
 import com.alexeykovzel.bot.config.EmojiConfig;
 import com.alexeykovzel.bot.feature.saveword.SaveWordBuilder;
 import com.alexeykovzel.bot.feature.viewlist.ViewListQuery;
-import com.alexeykovzel.bot.util.MessageBuilder;
-import com.alexeykovzel.bot.command.HelpCmd;
-import com.alexeykovzel.bot.command.StartCmd;
-import com.alexeykovzel.bot.command.ViewListCmd;
-import com.alexeykovzel.bot.query.CallbackQueryDto;
-import com.alexeykovzel.bot.query.Query;
-import com.alexeykovzel.bot.query.CallbackQueryType;
+import com.alexeykovzel.bot.feature.MessageBuilder;
+import com.alexeykovzel.bot.feature.command.HelpCmd;
+import com.alexeykovzel.bot.feature.command.StartCmd;
+import com.alexeykovzel.bot.feature.command.ViewListCmd;
+import com.alexeykovzel.bot.feature.query.QueryDto;
+import com.alexeykovzel.bot.feature.query.Query;
+import com.alexeykovzel.bot.feature.query.QueryType;
 import com.alexeykovzel.bot.feature.saveword.SaveWordQuery;
-import com.alexeykovzel.bot.util.DataConverter;
-import com.alexeykovzel.bot.util.QueryDataConverter;
+import com.alexeykovzel.bot.feature.query.converter.DataConverter;
+import com.alexeykovzel.bot.feature.query.converter.QueryDataConverter;
 import com.alexeykovzel.db.model.term.Term;
 import com.alexeykovzel.db.model.term.TermDef;
 import com.alexeykovzel.db.model.term.TermDto;
@@ -21,6 +21,7 @@ import com.alexeykovzel.db.repository.TermRepository;
 import com.alexeykovzel.db.service.CaseStudyDataService;
 import com.alexeykovzel.service.CollinsDictionaryAPI;
 import com.alexeykovzel.service.WebDictionary;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.CommandRegistry;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -33,7 +34,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Component
-public class PolygBotHandler extends LongPollingBotHandler {
+public class LongPollingPolygBotHandler extends LongPollingBotHandler {
     private static final Properties properties = new Properties();
     private final ChatRepository chatRepository;
     private final TermRepository termRepository;
@@ -42,8 +43,8 @@ public class PolygBotHandler extends LongPollingBotHandler {
     private static final String botToken = "1402979569:AAEuPHqAzkc1cTYwGI7DXuVb76ZSptD4zPM";
     private static final String botUsername = "polyg_bot";
 
-    public PolygBotHandler(ChatRepository chatRepository, TermRepository termRepository,
-                           CaseStudyDataService caseStudyDataService) {
+    public LongPollingPolygBotHandler(ChatRepository chatRepository, TermRepository termRepository,
+                                      CaseStudyDataService caseStudyDataService) {
         this.chatRepository = chatRepository;
         this.termRepository = termRepository;
         this.caseStudyDataService = caseStudyDataService;
@@ -100,25 +101,25 @@ public class PolygBotHandler extends LongPollingBotHandler {
     @Override
     public void handleCallbackQuery(Update update) {
         CallbackQuery basicQuery = update.getCallbackQuery();
-        DataConverter<String, CallbackQueryDto> dataConverter = new QueryDataConverter();
-        CallbackQueryDto callbackQueryDto = dataConverter.decode(basicQuery.getData());
-        CallbackQueryType callbackQueryType = CallbackQueryType.fromId(callbackQueryDto.getTypeKey());
+        DataConverter<String, QueryDto> dataConverter = new QueryDataConverter();
+        QueryDto queryDto = dataConverter.decode(basicQuery.getData());
+        QueryType queryType = QueryType.fromId(queryDto.getTypeKey());
         Query query;
 
-        if (callbackQueryType != null) {
-            switch (callbackQueryType) {
+        if (queryType != null) {
+            switch (queryType) {
                 case SAVE_WORD:
-                    query = new SaveWordQuery(callbackQueryDto.getArgs(), this, basicQuery,
+                    query = new SaveWordQuery(queryDto.getArgs(), this, basicQuery,
                             termRepository, caseStudyDataService);
                     break;
                 case VIEW_LIST:
-                    query = new ViewListQuery(callbackQueryDto.getArgs(), this, basicQuery,
+                    query = new ViewListQuery(queryDto.getArgs(), this, basicQuery,
                             caseStudyDataService);
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid callback query type!");
             }
-            query.setStatusByKey(callbackQueryDto.getStatusKey());
+            query.setStatusByKey(queryDto.getStatusKey());
             query.execute();
         } else {
             throw new NullPointerException();

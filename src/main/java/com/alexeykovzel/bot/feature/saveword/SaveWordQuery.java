@@ -1,7 +1,7 @@
 package com.alexeykovzel.bot.feature.saveword;
 
-import com.alexeykovzel.bot.query.CallbackQueryType;
-import com.alexeykovzel.bot.query.DefaultCallbackQuery;
+import com.alexeykovzel.bot.feature.query.QueryType;
+import com.alexeykovzel.bot.feature.query.BasicQuery;
 import com.alexeykovzel.db.model.casestudy.CaseStudy;
 import com.alexeykovzel.db.repository.TermRepository;
 import com.alexeykovzel.db.service.CaseStudyDataService;
@@ -13,8 +13,8 @@ import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.sql.Timestamp;
 
-public class SaveWordQuery extends DefaultCallbackQuery {
-    public static final CallbackQueryType type = CallbackQueryType.SAVE_WORD;
+public class SaveWordQuery extends BasicQuery {
+    public static final QueryType type = QueryType.SAVE_WORD;
     private final CaseStudyDataService caseStudyDataService;
     private final TermRepository termRepository;
     private SaveWordStatus status;

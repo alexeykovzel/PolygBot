@@ -1,19 +1,24 @@
 package com.alexeykovzel.bot.feature.viewlist;
 
-import com.alexeykovzel.bot.feature.QueryBuilder;
-import com.alexeykovzel.bot.query.CallbackQueryType;
+import com.alexeykovzel.bot.feature.query.QueryBuilder;
+import com.alexeykovzel.bot.feature.query.QueryType;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Range;
+import org.eclipse.collections.impl.list.Interval;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import static com.alexeykovzel.bot.feature.viewlist.ViewListQuery.ViewListStatus.DEFAULT;
-import static com.alexeykovzel.bot.feature.viewlist.ViewListQuery.ViewListStatus.PAGE_PANEL;
+import static com.alexeykovzel.bot.feature.viewlist.ViewListQuery.ViewListStatus.*;
 import static com.alexeykovzel.bot.feature.viewlist.ViewListQuery.maxTermsPerPage;
 
 public class ViewListBuilder extends QueryBuilder {
-    private static final CallbackQueryType type = CallbackQueryType.VIEW_LIST;
+    private static final QueryType type = QueryType.VIEW_LIST;
     private static final List<Character> alphabet = Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
             'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
 
@@ -23,6 +28,30 @@ public class ViewListBuilder extends QueryBuilder {
 
         Map<Integer, List<Character>> groups =
                 alphabet.stream().collect(Collectors.groupingBy(s -> alphabet.indexOf(s) / elPerRow));
+
+        groups.values().forEach(list -> {
+            List<InlineKeyboardButton> row = new ArrayList<>();
+            list.forEach(el -> {
+                String letter = String.valueOf(el);
+                row.add(InlineKeyboardButton.builder()
+                        .text(letter)
+                        .callbackData(buildCallbackData(type.getKey(), DEFAULT.getKey(), new String[]{letter})).build());
+            });
+            rowList.add(row);
+        });
+        rowList.get(rowList.size() - 1).add(InlineKeyboardButton.builder()
+                .text("←")
+                .callbackData(buildCallbackData(type.getKey(), DEFAULT.getKey(), new String[]{"1"})).build());
+        markup.setKeyboard(rowList);
+        return markup;
+    }
+
+    public static InlineKeyboardMarkup getPagePanelMarkup(int elNum, int elPerRow) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+
+        Map<Integer, List<Integer>> groups =
+                Interval.oneTo(elNum).stream().collect(Collectors.groupingBy(s -> (s - 1) / elPerRow));
 
         groups.values().forEach(list -> {
             List<InlineKeyboardButton> row = new ArrayList<>();
@@ -73,6 +102,8 @@ public class ViewListBuilder extends QueryBuilder {
                         buildCallbackData(type.getKey(), DEFAULT.getKey(), new String[]{prevPage})),
                 getPaginationBtn(page + " / " + maxPage,
                         buildCallbackData(type.getKey(), PAGE_PANEL.getKey(), new String[]{})),
+                getPaginationBtn("A - Z",
+                        buildCallbackData(type.getKey(), ABC_PANEL.getKey(), new String[]{})),
                 getPaginationBtn("»",
                         buildCallbackData(type.getKey(), DEFAULT.getKey(), new String[]{nextPage})));
     }

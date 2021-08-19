@@ -1,7 +1,7 @@
 package com.alexeykovzel.bot.feature.viewlist;
 
-import com.alexeykovzel.bot.query.CallbackQueryType;
-import com.alexeykovzel.bot.query.DefaultCallbackQuery;
+import com.alexeykovzel.bot.feature.query.QueryType;
+import com.alexeykovzel.bot.feature.query.BasicQuery;
 import com.alexeykovzel.db.service.CaseStudyDataService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,11 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.alexeykovzel.bot.feature.viewlist.ViewListBuilder.getAlphabeticalMarkup;
-import static com.alexeykovzel.bot.feature.viewlist.ViewListBuilder.getListViewMarkup;
-
-public class ViewListQuery extends DefaultCallbackQuery {
-    private static final CallbackQueryType type = CallbackQueryType.VIEW_LIST;
+public class ViewListQuery extends BasicQuery {
+    private static final QueryType type = QueryType.VIEW_LIST;
     public final static int maxTermsPerPage = 5;
 
     private final CaseStudyDataService caseStudyDataService;
@@ -40,22 +37,32 @@ public class ViewListQuery extends DefaultCallbackQuery {
                 int page = Integer.parseInt(args[0]);
                 Optional<List<String>> optTermValues = caseStudyDataService.findTermValuesByChatId(chatId);
                 optTermValues.ifPresent(terms -> editMessageReplyMarkup(chatId,
-                        messageId, getListViewMarkup(terms, page)));
+                        messageId, ViewListBuilder.getListViewMarkup(terms, page)));
                 break;
             case PAGE_PANEL:
-                editMessageReplyMarkup(chatId, messageId, getAlphabeticalMarkup(7));
+                optTermValues = caseStudyDataService.findTermValuesByChatId(chatId);
+                optTermValues.ifPresent(values -> {
+                    int pagesSum = values.size() / maxTermsPerPage;
+                    editMessage(chatId, messageId,
+                            "Please select a page",
+                            ViewListBuilder.getPagePanelMarkup(pagesSum, 7));
+                });
                 break;
-            case ABC:
+            case ABC_VIEW:
                 page = Integer.parseInt(args[0]);
                 char letter = args[1].charAt(0);
                 optTermValues = caseStudyDataService.findTermValuesByChatId(chatId);
                 optTermValues.ifPresent(terms -> {
                     List<String> termsByLetter = terms.stream()
                             .collect(Collectors.partitioningBy(s -> s.charAt(0) == letter)).get(Boolean.TRUE);
-                    editMessageReplyMarkup(chatId, messageId, getListViewMarkup(termsByLetter, page));
+                    editMessageReplyMarkup(chatId, messageId, ViewListBuilder.getListViewMarkup(termsByLetter, page));
                 });
                 break;
+            case ABC_PANEL:
+                editMessageReplyMarkup(chatId, messageId, ViewListBuilder.getAlphabeticalMarkup(7));
+                break;
         }
+        sendAnswerCallbackQuery(basicQuery.getId()); // To remove loading icon
     }
 
     @Override
@@ -68,7 +75,7 @@ public class ViewListQuery extends DefaultCallbackQuery {
 
     @AllArgsConstructor
     public enum ViewListStatus {
-        PAGE_PANEL("0"), DEFAULT("1"), ABC("2");
+        PAGE_PANEL("0"), DEFAULT("1"), ABC_VIEW("2"), ABC_PANEL("3");
 
         @Getter
         private String key;

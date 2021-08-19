@@ -1,9 +1,6 @@
 package com.alexeykovzel.bot.feature.saveword;
 
-import com.alexeykovzel.bot.feature.QueryBuilder;
-import com.alexeykovzel.bot.query.CallbackQueryDto;
-import com.alexeykovzel.bot.util.DataConverter;
-import com.alexeykovzel.bot.util.QueryDataConverter;
+import com.alexeykovzel.bot.feature.query.QueryBuilder;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -29,7 +26,7 @@ public class SaveWordBuilder extends QueryBuilder {
         return inlineKeyboardMarkup;
     }
 
-    private InlineKeyboardButton createInlineKeyboardButton(String text, String callbackData) {
+    private static InlineKeyboardButton createInlineKeyboardButton(String text, String callbackData) {
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
         inlineKeyboardButton.setText(text);
         inlineKeyboardButton.setCallbackData(callbackData);

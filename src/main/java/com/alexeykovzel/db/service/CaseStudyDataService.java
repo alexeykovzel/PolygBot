@@ -5,7 +5,6 @@ import com.alexeykovzel.db.model.casestudy.CaseStudy;
 import com.alexeykovzel.db.model.casestudy.CaseStudyId;
 import com.alexeykovzel.db.repository.CaseStudyRepository;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

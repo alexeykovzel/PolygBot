@@ -1,6 +1,5 @@
-package com.alexeykovzel.bot.command;
+package com.alexeykovzel.bot.feature.command;
 
-import com.alexeykovzel.bot.command.HelpCmd;
 import com.alexeykovzel.db.model.Chat;
 import com.alexeykovzel.db.model.User;
 import com.alexeykovzel.db.repository.ChatRepository;
@@ -9,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,27 +46,16 @@ public class StartCmd extends BotCommand {
 
     private InlineKeyboardMarkup getInlineKeyboardMarkup() { // is not used
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        InlineKeyboardButton button1 = new InlineKeyboardButton();
-        button1.setText("Excellent!");
-        button1.setCallbackData("Hello World!");
-        InlineKeyboardButton button2 = new InlineKeyboardButton();
-        button2.setText("Good");
-        button2.setCallbackData("Hello World!");
-        row1.add(button1);
-        row1.add(button2);
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
-        InlineKeyboardButton button3 = new InlineKeyboardButton();
-        button3.setText("Normal");
-        button3.setCallbackData("Hello World!");
-        InlineKeyboardButton button4 = new InlineKeyboardButton();
-        button4.setText("So-so");
-        button4.setCallbackData("Hello World!");
-        row2.add(button3);
-        row2.add(button4);
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(row1);
-        rowList.add(row2);
+        List<List<InlineKeyboardButton>> rowList = Arrays.asList(
+                Arrays.asList(
+                        InlineKeyboardButton.builder().text("Excellent").callbackData("data").build(),
+                        InlineKeyboardButton.builder().text("Good").callbackData("data").build()
+                ),
+                Arrays.asList(
+                        InlineKeyboardButton.builder().text("Normal").callbackData("data").build(),
+                        InlineKeyboardButton.builder().text("Bad").callbackData("data").build()
+                )
+        );
         markup.setKeyboard(rowList);
         return markup;
     }

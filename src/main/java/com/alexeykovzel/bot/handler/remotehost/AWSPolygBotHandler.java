@@ -1,7 +1,8 @@
-package com.alexeykovzel.bot.handler;
+package com.alexeykovzel.bot.handler.remotehost;
 
-import com.alexeykovzel.bot.command.HelpCmd;
+import com.alexeykovzel.bot.feature.command.HelpCmd;
 import com.alexeykovzel.bot.config.EmojiConfig;
+import com.alexeykovzel.bot.handler.TelegramBotHandler;
 import lombok.Getter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

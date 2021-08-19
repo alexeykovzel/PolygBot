@@ -1,6 +1,6 @@
-package com.alexeykovzel.bot.command;
+package com.alexeykovzel.bot.feature.command;
 
-import com.alexeykovzel.bot.util.MessageBuilder;
+import com.alexeykovzel.bot.feature.MessageBuilder;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -24,12 +24,11 @@ public class HelpCmd extends BotCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
+        String chatId = chat.getId().toString();
         String text = MessageBuilder.buildHelpMsg();
 
-        SendMessage sendMessage = SendMessage.builder()
-                .chatId(chat.getId().toString())
-                .parseMode(ParseMode.MARKDOWN)
-                .text(text).build();
+        SendMessage sendMessage = SendMessage.builder().text(text).chatId(chatId)
+                .parseMode(ParseMode.MARKDOWN).build();
 
         try {
             absSender.execute(sendMessage);

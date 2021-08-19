@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.query;
+package com.alexeykovzel.bot.feature.query;
 
 public interface Query {
     void execute();

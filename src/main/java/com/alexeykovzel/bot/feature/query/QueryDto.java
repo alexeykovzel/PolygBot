@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.query;
+package com.alexeykovzel.bot.feature.query;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CallbackQueryDto {
+public class QueryDto {
     private String typeKey;
     private String statusKey;
     private String[] args;

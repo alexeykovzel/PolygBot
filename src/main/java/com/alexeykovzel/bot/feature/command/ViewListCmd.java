@@ -1,26 +1,19 @@
-package com.alexeykovzel.bot.command;
+package com.alexeykovzel.bot.feature.command;
 
-import com.alexeykovzel.bot.feature.viewlist.ViewListQuery;
+import com.alexeykovzel.bot.feature.viewlist.ViewListBuilder;
 import com.alexeykovzel.db.service.CaseStudyDataService;
-import org.json.JSONObject;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.alexeykovzel.bot.feature.viewlist.ViewListBuilder.getListViewMarkup;
+import java.util.List;
+import java.util.Optional;
 
 public class ViewListCmd extends BotCommand {
-    private final static int maxTermsPerPage = ViewListQuery.maxTermsPerPage;
     private static final String COMMAND_IDENTIFIER = "vocab";
     private static final String COMMAND_DESCRIPTION = "shows user vocabulary";
     private final CaseStudyDataService caseStudyDataService;
@@ -38,18 +31,23 @@ public class ViewListCmd extends BotCommand {
             List<String> terms = optTermValues.get();
             int defaultPage = 1;
 
-            String message = String.format("Your list consists of *%s* words! You can click the word to get its full info", terms.size());
+            String text = String.format("Your list consists of *%s* words! You can click the word to get its full info", terms.size());
+            SendMessage message = SendMessage.builder().text(text).chatId(chatId)
+                    .replyMarkup(ViewListBuilder.getListViewMarkup(terms, defaultPage))
+                    .parseMode(ParseMode.MARKDOWN).build();
+
             try {
-                absSender.execute(SendMessage.builder().text(message).chatId(chatId)
-                        .replyMarkup(getListViewMarkup(terms, defaultPage))
-                        .parseMode(ParseMode.MARKDOWN).build());
+                absSender.execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         } else {
-            String message = "Right now, your list is empty";
+            String text = "Right now, your list is empty";
+            SendMessage message = SendMessage.builder().text(text).chatId(chatId)
+                    .parseMode(ParseMode.MARKDOWN).build();
+
             try {
-                absSender.execute(SendMessage.builder().text(message).chatId(chatId).parseMode(ParseMode.MARKDOWN).build());
+                absSender.execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
