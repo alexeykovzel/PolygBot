@@ -1,6 +1,6 @@
 package com.alexeykovzel.bot.feature.command;
 
-import com.alexeykovzel.bot.feature.MessageBuilder;
+import com.alexeykovzel.bot.feature.termdef.TermInfoBuilder;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,18 +14,18 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
  *
  * @author Timo Schulz (Mit0x2)
  */
-public class HelpCmd extends BotCommand {
+public class HelpCommand extends BotCommand {
     private static final String COMMAND_IDENTIFIER = "help";
     private static final String COMMAND_DESCRIPTION = "shows all commands. Use /help [command] for more info";
 
-    public HelpCmd() {
+    public HelpCommand() {
         super(COMMAND_IDENTIFIER, COMMAND_DESCRIPTION);
     }
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
         String chatId = chat.getId().toString();
-        String text = MessageBuilder.buildHelpMsg();
+        String text = TermInfoBuilder.buildHelpMsg();
 
         SendMessage sendMessage = SendMessage.builder().text(text).chatId(chatId)
                 .parseMode(ParseMode.MARKDOWN).build();

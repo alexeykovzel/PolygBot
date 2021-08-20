@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.feature.query;
+package com.alexeykovzel.bot.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ public enum QueryType {
     @Getter
     private String key;
 
-    public static QueryType fromId(String key){
+    public static QueryType fromKey(String key){
         for (QueryType queryType : values()){
             if (queryType.key.equals(key)){
                 return queryType;

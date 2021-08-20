@@ -16,16 +16,16 @@ import java.util.List;
  *
  * @author alexeykovzel
  */
-public class StartCmd extends BotCommand {
+public class StartCommand extends BotCommand {
     private static final String COMMAND_IDENTIFIER = "start";
     private static final String COMMAND_DESCRIPTION = "this command starts the bot";
     private final ChatRepository chatRepository;
-    private final HelpCmd helpCmd;
+    private final HelpCommand helpCommand;
 
 
-    public StartCmd(HelpCmd helpCmd, ChatRepository chatRepository) {
+    public StartCommand(HelpCommand helpCommand, ChatRepository chatRepository) {
         super(COMMAND_IDENTIFIER, COMMAND_DESCRIPTION);
-        this.helpCmd = helpCmd;
+        this.helpCommand = helpCommand;
         this.chatRepository = chatRepository;
     }
 
@@ -41,7 +41,7 @@ public class StartCmd extends BotCommand {
                     new User(user.getFirstName(), user.getLastName(), user.getUserName(), null)));
         }
 
-        helpCmd.execute(absSender, user, chat, new String[]{});
+        helpCommand.execute(absSender, user, chat, new String[]{});
     }
 
     private InlineKeyboardMarkup getInlineKeyboardMarkup() { // is not used

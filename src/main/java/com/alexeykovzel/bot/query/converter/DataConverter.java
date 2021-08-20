@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.feature.query.converter;
+package com.alexeykovzel.bot.query.converter;
 
 public interface DataConverter<E, D> {
     E encode(D d);

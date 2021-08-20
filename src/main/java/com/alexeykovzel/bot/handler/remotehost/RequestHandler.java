@@ -1,6 +1,5 @@
 package com.alexeykovzel.bot.handler.remotehost;
 
-import com.alexeykovzel.bot.handler.TelegramBotHandler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;

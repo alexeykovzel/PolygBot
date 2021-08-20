@@ -7,9 +7,9 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class HelloCmd extends BotCommand {
+public class HelloCommand extends BotCommand {
 
-    public HelloCmd() {
+    public HelloCommand() {
         super("hello", "Experimental command");
     }
 

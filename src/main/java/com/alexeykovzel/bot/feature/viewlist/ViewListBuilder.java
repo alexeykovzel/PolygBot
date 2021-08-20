@@ -1,26 +1,23 @@
 package com.alexeykovzel.bot.feature.viewlist;
 
-import com.alexeykovzel.bot.feature.query.QueryBuilder;
-import com.alexeykovzel.bot.feature.query.QueryType;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Range;
+import com.alexeykovzel.bot.query.QueryBuilder;
+import com.alexeykovzel.bot.query.QueryType;
 import org.eclipse.collections.impl.list.Interval;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static com.alexeykovzel.bot.feature.viewlist.ViewListQuery.ViewListStatus.*;
-import static com.alexeykovzel.bot.feature.viewlist.ViewListQuery.maxTermsPerPage;
 
 public class ViewListBuilder extends QueryBuilder {
     private static final QueryType type = QueryType.VIEW_LIST;
     private static final List<Character> alphabet = Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
             'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+    public static final int defaultTermsPerPage = 5;
+    public static final int defaultItemsPerRow = 7;
+    public static final int defaultPage = 1;
 
     public static InlineKeyboardMarkup getAlphabeticalMarkup(int elPerRow) {
         InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
@@ -67,12 +64,12 @@ public class ViewListBuilder extends QueryBuilder {
         return markup;
     }
 
-    public static InlineKeyboardMarkup getListViewMarkup(List<String> terms, int page) {
+    public static InlineKeyboardMarkup getListViewMarkup(List<String> terms, int page, int termsPerPage) {
         int numOfTerms = terms.size();
-        int maxPage = (int) Math.ceil((double) numOfTerms / maxTermsPerPage);
+        int maxPage = (int) Math.ceil((double) numOfTerms / termsPerPage);
 
-        int indexI = (page - 1) * maxTermsPerPage;
-        int indexF = page == maxPage ? numOfTerms : indexI + maxTermsPerPage;
+        int indexI = (page - 1) * termsPerPage;
+        int indexF = page == maxPage ? numOfTerms : indexI + termsPerPage;
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         for (int i = indexI; i < indexF; i++) {
@@ -100,7 +97,7 @@ public class ViewListBuilder extends QueryBuilder {
         return Arrays.asList(
                 getPaginationBtn("«",
                         buildCallbackData(type.getKey(), DEFAULT.getKey(), new String[]{prevPage})),
-                getPaginationBtn(page + " / " + maxPage,
+                getPaginationBtn(page + " of " + maxPage,
                         buildCallbackData(type.getKey(), PAGE_PANEL.getKey(), new String[]{})),
                 getPaginationBtn("A - Z",
                         buildCallbackData(type.getKey(), ABC_PANEL.getKey(), new String[]{})),

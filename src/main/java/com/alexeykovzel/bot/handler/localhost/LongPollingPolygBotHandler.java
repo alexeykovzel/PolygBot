@@ -2,17 +2,12 @@ package com.alexeykovzel.bot.handler.localhost;
 
 import com.alexeykovzel.bot.config.EmojiConfig;
 import com.alexeykovzel.bot.feature.saveword.SaveWordBuilder;
-import com.alexeykovzel.bot.feature.viewlist.ViewListQuery;
-import com.alexeykovzel.bot.feature.MessageBuilder;
-import com.alexeykovzel.bot.feature.command.HelpCmd;
-import com.alexeykovzel.bot.feature.command.StartCmd;
-import com.alexeykovzel.bot.feature.command.ViewListCmd;
-import com.alexeykovzel.bot.feature.query.QueryDto;
-import com.alexeykovzel.bot.feature.query.Query;
-import com.alexeykovzel.bot.feature.query.QueryType;
+import com.alexeykovzel.bot.feature.termdef.TermInfoBuilder;
+import com.alexeykovzel.bot.feature.command.HelpCommand;
+import com.alexeykovzel.bot.feature.command.StartCommand;
+import com.alexeykovzel.bot.feature.viewlist.ViewListCommand;
 import com.alexeykovzel.bot.feature.saveword.SaveWordQuery;
-import com.alexeykovzel.bot.feature.query.converter.DataConverter;
-import com.alexeykovzel.bot.feature.query.converter.QueryDataConverter;
+import com.alexeykovzel.bot.feature.viewlist.ViewListQuery;
 import com.alexeykovzel.db.model.term.Term;
 import com.alexeykovzel.db.model.term.TermDef;
 import com.alexeykovzel.db.model.term.TermDto;
@@ -21,9 +16,8 @@ import com.alexeykovzel.db.repository.TermRepository;
 import com.alexeykovzel.db.service.CaseStudyDataService;
 import com.alexeykovzel.service.CollinsDictionaryAPI;
 import com.alexeykovzel.service.WebDictionary;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.CommandRegistry;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -49,6 +43,7 @@ public class LongPollingPolygBotHandler extends LongPollingBotHandler {
         this.termRepository = termRepository;
         this.caseStudyDataService = caseStudyDataService;
         setCommandRegistry();
+        setQueryRegistry();
     }
 
     @Override
@@ -71,59 +66,40 @@ public class LongPollingPolygBotHandler extends LongPollingBotHandler {
     }
 
     private void setCommandRegistry() {
-        commandRegistry = new CommandRegistry(true, () -> botUsername);
-        HelpCmd helpCmd = new HelpCmd();
-        commandRegistry.registerAll(helpCmd,
-                new StartCmd(helpCmd, chatRepository),
-                new ViewListCmd(caseStudyDataService));
+        HelpCommand helpCommand = new HelpCommand();
+        commandRegistry.registerAll(helpCommand,
+                new StartCommand(helpCommand, chatRepository),
+                new ViewListCommand(caseStudyDataService));
 
         commandRegistry.registerDefaultAction((absSender, message) -> {
-            try {
-                absSender.execute(SendMessage.builder()
-                        .chatId(message.getChatId().toString())
-                        .text(String.format("The command '%s' is not known by this bot. Here comes some help %s",
-                                message.getText(), EmojiConfig.AMBULANCE)).build());
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-            helpCmd.execute(absSender, message.getFrom(), message.getChat(), new String[]{});
+            executeApiMethod(SendMessage.builder().chatId(message.getChatId().toString())
+                    .text(String.format("The command '%s' is not known by this bot. Here comes some help %s",
+                            message.getText(), EmojiConfig.AMBULANCE))
+                    .parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
+
+            helpCommand.execute(absSender, message.getFrom(), message.getChat(), new String[]{});
         });
     }
 
+    private void setQueryRegistry() {
+        queryRegistry.registerAll(
+                new SaveWordQuery(termRepository, caseStudyDataService),
+                new ViewListQuery(caseStudyDataService));
+    }
 
     @Override
     public void handleInvalidCommandUpdate(Update update) {
         String chatId = String.valueOf(update.getMessage().getChatId());
-        sendMsg(chatId, "I don't know such command");
+        executeApiMethod(SendMessage.builder().chatId(chatId)
+                .text("I don't know such command")
+                .parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
     }
 
 
     @Override
     public void handleCallbackQuery(Update update) {
-        CallbackQuery basicQuery = update.getCallbackQuery();
-        DataConverter<String, QueryDto> dataConverter = new QueryDataConverter();
-        QueryDto queryDto = dataConverter.decode(basicQuery.getData());
-        QueryType queryType = QueryType.fromId(queryDto.getTypeKey());
-        Query query;
-
-        if (queryType != null) {
-            switch (queryType) {
-                case SAVE_WORD:
-                    query = new SaveWordQuery(queryDto.getArgs(), this, basicQuery,
-                            termRepository, caseStudyDataService);
-                    break;
-                case VIEW_LIST:
-                    query = new ViewListQuery(queryDto.getArgs(), this, basicQuery,
-                            caseStudyDataService);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid callback query type!");
-            }
-            query.setStatusByKey(queryDto.getStatusKey());
-            query.execute();
-        } else {
-            throw new NullPointerException();
-        }
+        CallbackQuery callbackQuery = update.getCallbackQuery();
+        queryRegistry.executeQuery(this, callbackQuery);
     }
 
     @Override
@@ -139,7 +115,9 @@ public class LongPollingPolygBotHandler extends LongPollingBotHandler {
     @Override
     public void handleNonTextMessage(Message message) {
         String chatId = message.getChatId().toString();
-        sendMsg(chatId, "Send pls text");
+        executeApiMethod(SendMessage.builder().chatId(chatId)
+                .text("Send pls text")
+                .parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
     }
 
     @Override
@@ -150,14 +128,17 @@ public class LongPollingPolygBotHandler extends LongPollingBotHandler {
 
         try {
             TermDto termDto = dictionary.getTerm(messageText);
-            sendMsg(chatId, MessageBuilder.buildTermInfoMessage(termDto).toString());
+
+            executeApiMethod(SendMessage.builder().chatId(chatId)
+                    .text(TermInfoBuilder.buildTermInfoMessage(termDto).toString())
+                    .parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
 
             String termValue = termDto.getValue();
             Long termId = termRepository.findIdByValue(termValue);
             boolean queryRequired;
 
             if (termId != null) {
-                queryRequired = !caseStudyDataService.findById(termId, chatId).isPresent();
+                queryRequired = caseStudyDataService.findById(termId, chatId).isEmpty();
             } else {
                 Set<String> termExamples = new HashSet<>(termDto.getExamples());
 
@@ -168,17 +149,23 @@ public class LongPollingPolygBotHandler extends LongPollingBotHandler {
                 queryRequired = true;
             }
             if (queryRequired) {
-                sendMsg(chatId, String.format("Would you like to learn '*%s*'?", termValue),
-                        SaveWordBuilder.buildSaveWordMarkup(termValue));
+                executeApiMethod(SendMessage.builder().chatId(chatId)
+                        .text(String.format("Would you like to learn '*%s*'?", termValue))
+                        .replyMarkup(SaveWordBuilder.buildSaveWordMarkup(termValue))
+                        .parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
             }
 
         } catch (NullPointerException e) {
-            sendMsg(chatId, String.format("Ahh, I don't know what is '*%s*' %s",
-                    messageText, EmojiConfig.DISAPPOINTED_BUT_RELIEVED_FACE));
+            executeApiMethod(SendMessage.builder().chatId(chatId)
+                    .text(String.format("Ahh, I don't know what is '*%s*' %s",
+                            messageText, EmojiConfig.DISAPPOINTED_BUT_RELIEVED_FACE))
+                    .parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
 
         } catch (IOException e) {
-            sendMsg(chatId, String.format("%s is not responding.. %s",
-                    dictionary.getName(), EmojiConfig.FACE_WITH_COLD_SWEAT));
+            executeApiMethod(SendMessage.builder().chatId(chatId)
+                    .text(String.format("%s is not responding.. %s",
+                            dictionary.getName(), EmojiConfig.FACE_WITH_COLD_SWEAT))
+                    .parseMode(ParseMode.MARKDOWN).disableWebPagePreview(true).build());
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.feature.command;
+package com.alexeykovzel.bot.feature.viewlist;
 
 import com.alexeykovzel.bot.feature.viewlist.ViewListBuilder;
 import com.alexeykovzel.db.service.CaseStudyDataService;
@@ -13,12 +13,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.List;
 import java.util.Optional;
 
-public class ViewListCmd extends BotCommand {
+public class ViewListCommand extends BotCommand {
     private static final String COMMAND_IDENTIFIER = "vocab";
     private static final String COMMAND_DESCRIPTION = "shows user vocabulary";
     private final CaseStudyDataService caseStudyDataService;
 
-    public ViewListCmd(CaseStudyDataService caseStudyDataService) {
+    public ViewListCommand(CaseStudyDataService caseStudyDataService) {
         super(COMMAND_IDENTIFIER, COMMAND_DESCRIPTION);
         this.caseStudyDataService = caseStudyDataService;
     }
@@ -29,11 +29,12 @@ public class ViewListCmd extends BotCommand {
 
         if (optTermValues.isPresent()) {
             List<String> terms = optTermValues.get();
-            int defaultPage = 1;
 
-            String text = String.format("Your list consists of *%s* words! You can click the word to get its full info", terms.size());
+            String text = String.format("Your list consists of *%s* words! You can click the word to get its full info",
+                    terms.size());
             SendMessage message = SendMessage.builder().text(text).chatId(chatId)
-                    .replyMarkup(ViewListBuilder.getListViewMarkup(terms, defaultPage))
+                    .replyMarkup(ViewListBuilder.getListViewMarkup(terms,
+                            ViewListBuilder.defaultPage, ViewListBuilder.defaultTermsPerPage))
                     .parseMode(ParseMode.MARKDOWN).build();
 
             try {

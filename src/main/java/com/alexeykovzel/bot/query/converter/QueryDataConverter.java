@@ -1,6 +1,6 @@
-package com.alexeykovzel.bot.feature.query.converter;
+package com.alexeykovzel.bot.query.converter;
 
-import com.alexeykovzel.bot.feature.query.QueryDto;
+import com.alexeykovzel.bot.query.QueryDto;
 
 public class QueryDataConverter implements DataConverter<String, QueryDto> {
     public static final String DATA_DELIMITER = "&";

@@ -1,8 +1,7 @@
 package com.alexeykovzel.bot.handler.remotehost;
 
-import com.alexeykovzel.bot.feature.command.HelpCmd;
+import com.alexeykovzel.bot.feature.command.HelpCommand;
 import com.alexeykovzel.bot.config.EmojiConfig;
-import com.alexeykovzel.bot.handler.TelegramBotHandler;
 import lombok.Getter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -48,7 +47,7 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
         this.botUsername = botUsername;
 
         commandRegistry = new CommandRegistry(true, () -> botUsername);
-        HelpCmd helpCmd = new HelpCmd();
+        HelpCommand helpCommand = new HelpCommand();
 //        commandRegistry.registerAll(helpCommand, new StartCommand(helpCommand), new HelloCommand());
 
         commandRegistry.registerDefaultAction((absSender, message) -> {
@@ -60,7 +59,7 @@ public class AWSPolygBotHandler extends TelegramBotHandler {
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
-            helpCmd.execute(absSender, message.getFrom(), message.getChat(), new String[]{});
+            helpCommand.execute(absSender, message.getFrom(), message.getChat(), new String[]{});
         });
     }
 

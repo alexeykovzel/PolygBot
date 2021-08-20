@@ -1,17 +1,17 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.2'
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.21'
+    id 'org.springframework.boot' version '2.5.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id "io.freefair.lombok" version "6.0.0-m2"
-    id 'org.jetbrains.kotlin.jvm' version '1.5.21'
-    id 'java'
 }
 
 group 'com.alexeykovzel'
 version '1.0-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
 }
 
 repositories {
@@ -34,10 +34,10 @@ dependencies {
     implementation 'com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2-instrumentor'
 
     // Persistence
-//    implementation 'org.hibernate:hibernate-core:5.4.0.Final'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.3'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.3'
+//    implementation 'org.hibernate:hibernate-core:5.4.0.Final'
     runtimeOnly 'com.h2database:h2'
 
     // Logging
@@ -53,7 +53,6 @@ dependencies {
     implementation 'org.telegram:telegrambots:5.3.0'
 
     // Other
-//    implementation 'org.eclipse.collections:eclipse-collections-api:10.4.0'
     implementation 'org.eclipse.collections:eclipse-collections:10.4.0'
     implementation 'org.jsoup:jsoup:1.14.2'
 
@@ -68,6 +67,7 @@ test {
     useJUnitPlatform()
 }
 
+// AWS
 task packageFat(type: Zip) {
     from compileJava
     from processResources
@@ -92,6 +92,8 @@ task packageSkinny(type: Zip) {
 }
 
 build.dependsOn packageSkinny
+
+// Kotlin
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"

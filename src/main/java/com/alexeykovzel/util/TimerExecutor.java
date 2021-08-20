@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class TimerExecutor {
+public class TimerExecutor implements AutoCloseable{
     private static volatile TimerExecutor instance;
     private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
@@ -78,14 +78,7 @@ public class TimerExecutor {
     }
 
     @Override
-    public void finalize() {
-        this.stop();
-    }
-
-    /**
-     * Stop the thread
-     */
-    private void stop() {
+    public void close() {
         executorService.shutdown();
         try {
             executorService.awaitTermination(1, TimeUnit.DAYS);

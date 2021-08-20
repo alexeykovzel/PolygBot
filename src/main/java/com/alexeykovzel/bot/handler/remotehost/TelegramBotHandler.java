@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.handler;
+package com.alexeykovzel.bot.handler.remotehost;
 
 import com.alexeykovzel.bot.handler.BotHandler;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
@@ -52,7 +52,6 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
         return false;
     }
 
-    @Override
     public synchronized void sendMsg(String chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
@@ -67,7 +66,6 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
         }
     }
 
-    @Override
     public synchronized void sendMsg(String chatId, String text) {
         SendMessage sendMessage = SendMessage.builder()
                 .chatId(chatId)
@@ -81,7 +79,6 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
         }
     }
 
-    @Override
     public synchronized void deleteMsg(String chatId, Integer messageId) {
         DeleteMessage deleteMessage = DeleteMessage.builder()
                 .chatId(chatId)
@@ -93,63 +90,11 @@ public abstract class TelegramBotHandler extends DefaultAbsSender implements Bot
         }
     }
 
-    @Override
-    public synchronized void sendAnswerCallbackQuery(String text, boolean alert, String callbackQueryId) {
-        AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQueryId)
-                .showAlert(alert)
-                .text(text).build();
-        try {
-            execute(answerCallbackQuery);
-        } catch (TelegramApiException e) {
-            e.getStackTrace();
-        }
-    }
-
-    @Override
-    public synchronized void sendAnswerCallbackQuery(String callbackQueryId) {
-        AnswerCallbackQuery answerCallbackQuery = AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQueryId).build();
-        try {
-            execute(answerCallbackQuery);
-        } catch (TelegramApiException e) {
-            e.getStackTrace();
-        }
-    }
-
-    @Override
     public String escapeMarkdown(String text) {
         return text
                 .replace("_", "\\_")
                 .replace("*", "\\*")
                 .replace("[", "\\[")
                 .replace("`", "\\`");
-    }
-
-    @Override
-    public void editMessageReplyMarkup(String chatId, Integer messageId, InlineKeyboardMarkup markup) {
-        EditMessageReplyMarkup replyMarkup = EditMessageReplyMarkup.builder()
-                .chatId(chatId)
-                .messageId(messageId)
-                .replyMarkup(markup).build();
-        try {
-            execute(replyMarkup);
-        } catch (TelegramApiException e) {
-            e.getStackTrace();
-        }
-    }
-
-    @Override
-    public void editMessage(String chatId, Integer messageId, String text, InlineKeyboardMarkup markup) {
-        EditMessageText replyMarkup = EditMessageText.builder()
-                .chatId(chatId)
-                .messageId(messageId)
-                .text(text)
-                .replyMarkup(markup).build();
-        try {
-            execute(replyMarkup);
-        } catch (TelegramApiException e) {
-            e.getStackTrace();
-        }
     }
 }

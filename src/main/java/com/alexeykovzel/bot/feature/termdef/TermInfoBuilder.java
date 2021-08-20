@@ -1,11 +1,11 @@
-package com.alexeykovzel.bot.feature;
+package com.alexeykovzel.bot.feature.termdef;
 
 import com.alexeykovzel.db.model.term.TermDto;
 import com.alexeykovzel.util.Pair;
 
 import java.util.List;
 
-public class MessageBuilder {
+public class TermInfoBuilder {
     public static StringBuilder buildTermInfoMessage(TermDto termDto) {
         StringBuilder response = new StringBuilder();
 

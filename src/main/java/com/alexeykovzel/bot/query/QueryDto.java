@@ -1,4 +1,4 @@
-package com.alexeykovzel.bot.feature.query;
+package com.alexeykovzel.bot.query;
 
 import lombok.*;
 
